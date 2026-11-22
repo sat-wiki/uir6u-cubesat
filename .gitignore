@@ -26,3 +26,5 @@ desktop.ini
 RTE/_SatWiki_1_OBC
 
 /references/
+/.venv/
+__pycache__/

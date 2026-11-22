@@ -1,7 +1,9 @@
 cmake_minimum_required(VERSION 3.22)
 project(ttc_native_tests C)
 enable_testing()
-find_package(Python3 REQUIRED COMPONENTS Interpreter)
+find_program(UV_EXECUTABLE NAMES uv REQUIRED)
+get_filename_component(project_root "${CMAKE_CURRENT_SOURCE_DIR}/.." ABSOLUTE)
+set(uv_run "${UV_EXECUTABLE}" run --locked --project "${project_root}")
 set(lib "${CMAKE_CURRENT_SOURCE_DIR}/../Libraries")
 add_executable(test_ttc test_ttc.c "${lib}/ttc_link.c" "${lib}/ttc_vote.c")
 target_include_directories(test_ttc PRIVATE "${lib}")
@@ -19,7 +21,7 @@ foreach(target test_ttc test_store)
   endif()
   add_test(NAME ${target} COMMAND ${target})
 endforeach()
-add_test(NAME ground_interop COMMAND "${Python3_EXECUTABLE}" "${CMAKE_CURRENT_SOURCE_DIR}/interop.py" "$<TARGET_FILE:test_ttc>")
+add_test(NAME ground_interop COMMAND ${uv_run} python "${CMAKE_CURRENT_SOURCE_DIR}/interop.py" "$<TARGET_FILE:test_ttc>")
 
 option(TTC_TEST_RENODE "Boot the ARM firmware on the Renode STM32H743 model" OFF)
 if(TTC_TEST_RENODE)
@@ -27,10 +29,7 @@ if(TTC_TEST_RENODE)
   set(TTC_FIRMWARE_ELF "${CMAKE_CURRENT_SOURCE_DIR}/../build/Debug/cubesat.elf"
       CACHE FILEPATH "Firmware ELF with symbols for the Renode suite")
   add_test(NAME stm32h743_freertos
-    COMMAND "${RENODE_TEST}" -r "${CMAKE_CURRENT_BINARY_DIR}/renode-results"
+    COMMAND ${uv_run} --group renode "${RENODE_TEST}" -r "${CMAKE_CURRENT_BINARY_DIR}/renode-results"
             --variable "ELF:${TTC_FIRMWARE_ELF}" "${CMAKE_CURRENT_SOURCE_DIR}/renode/firmware.robot")
-  get_filename_component(test_python_dir "${Python3_EXECUTABLE}" DIRECTORY)
-  set_tests_properties(stm32h743_freertos PROPERTIES
-    TIMEOUT 180
-    ENVIRONMENT_MODIFICATION "PATH=path_list_prepend:${test_python_dir}")
+  set_tests_properties(stm32h743_freertos PROPERTIES TIMEOUT 180)
 endif()
