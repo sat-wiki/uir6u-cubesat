@@ -52,6 +52,7 @@ typedef struct {
 
 typedef struct {
     uint32_t ref_in_hz;
+    uint16_t reference_divider; /* zero selects the automatic divider */
     uint8_t power_down_mode;
     uint8_t current_setting_1;
     uint8_t current_setting_2;

@@ -1,5 +1,5 @@
 /***************************************************************************//**
- *   @file   Communication.c
+ *   @file   communication.c
  *   @brief  Implementation of Communication Driver.
  *           Processor.
  *   @author DBogdan (dragos.bogdan@analog.com)
@@ -44,7 +44,7 @@
 /******************************************************************************/
 /* Include Files                                                              */
 /******************************************************************************/
-#include "Communication.h"
+#include "communication.h"
 #include "main.h"
 
 extern SPI_HandleTypeDef hspi3;

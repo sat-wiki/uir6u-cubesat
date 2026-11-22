@@ -23,6 +23,7 @@
 /* USER CODE BEGIN 0 */
 
 DMA_HandleTypeDef hdma_spi1_tx;
+DMA_HandleTypeDef hdma_spi1_rx;
 
 /* USER CODE END 0 */
 
@@ -74,7 +75,15 @@ void HAL_I2S_MspInit(I2S_HandleTypeDef* i2sHandle)
   /** Initializes the peripherals clock
   */
     PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_SPI1;
-    PeriphClkInitStruct.Spi123ClockSelection = RCC_SPI123CLKSOURCE_PLL;
+    PeriphClkInitStruct.Spi123ClockSelection = RCC_SPI123CLKSOURCE_PLL3;
+    PeriphClkInitStruct.PLL3.PLL3M = 5;
+    PeriphClkInitStruct.PLL3.PLL3N = 78;
+    PeriphClkInitStruct.PLL3.PLL3P = 8;
+    PeriphClkInitStruct.PLL3.PLL3Q = 8;
+    PeriphClkInitStruct.PLL3.PLL3R = 8;
+    PeriphClkInitStruct.PLL3.PLL3FRACN = 5269;
+    PeriphClkInitStruct.PLL3.PLL3RGE = RCC_PLL3VCIRANGE_2;
+    PeriphClkInitStruct.PLL3.PLL3VCOSEL = RCC_PLL3VCOWIDE;
     if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
     {
       Error_Handler();
@@ -145,6 +154,14 @@ void HAL_I2S_MspInit(I2S_HandleTypeDef* i2sHandle)
     }
 
     __HAL_LINKDMA(i2sHandle, hdmatx, hdma_spi1_tx);
+    hdma_spi1_rx.Instance = DMA1_Stream1;
+    hdma_spi1_rx.Init = hdma_spi1_tx.Init;
+    hdma_spi1_rx.Init.Request = DMA_REQUEST_SPI1_RX;
+    hdma_spi1_rx.Init.Direction = DMA_PERIPH_TO_MEMORY;
+    if (HAL_DMA_Init(&hdma_spi1_rx) != HAL_OK) Error_Handler();
+    __HAL_LINKDMA(i2sHandle, hdmarx, hdma_spi1_rx);
+    HAL_NVIC_SetPriority(DMA1_Stream1_IRQn, 6, 0);
+    HAL_NVIC_EnableIRQ(DMA1_Stream1_IRQn);
 
     HAL_NVIC_SetPriority(DMA1_Stream0_IRQn, 6, 0);
     HAL_NVIC_EnableIRQ(DMA1_Stream0_IRQn);
@@ -181,6 +198,8 @@ void HAL_I2S_MspDeInit(I2S_HandleTypeDef* i2sHandle)
 
   /* USER CODE BEGIN SPI1_MspDeInit 1 */
 
+    HAL_DMA_DeInit(i2sHandle->hdmarx);
+    HAL_NVIC_DisableIRQ(DMA1_Stream1_IRQn);
     HAL_DMA_DeInit(i2sHandle->hdmatx);
     HAL_NVIC_DisableIRQ(DMA1_Stream0_IRQn);
 

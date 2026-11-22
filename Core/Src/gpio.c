@@ -60,7 +60,12 @@ void MX_GPIO_Init(void)
                           |AIC3104_DPWR_Pin, GPIO_PIN_SET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(ADF7021_TESTA_GPIO_Port, ADF7021_TESTA_Pin, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(NAND_CS_GPIO_Port,NAND_CS_Pin,GPIO_PIN_SET);
+  GPIO_InitStruct.Pin = NAND_CS_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
+  HAL_GPIO_Init(NAND_CS_GPIO_Port,&GPIO_InitStruct);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOE, IO04_Pin|IO06_Pin, GPIO_PIN_RESET);
@@ -104,13 +109,17 @@ void MX_GPIO_Init(void)
 
   /*Configure GPIO pin : ADF7021_TESTA_Pin */
   GPIO_InitStruct.Pin = ADF7021_TESTA_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(ADF7021_TESTA_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pins : FAULT3V3_Pin IO00_Pin IO01_Pin IO03_Pin */
-  GPIO_InitStruct.Pin = FAULT3V3_Pin|IO00_Pin|IO01_Pin|IO03_Pin;
+  GPIO_InitStruct.Pin = FAULT3V3_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
+  HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);
+  GPIO_InitStruct.Pin = IO00_Pin|IO01_Pin|IO03_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOE, &GPIO_InitStruct);

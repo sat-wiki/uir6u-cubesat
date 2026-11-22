@@ -278,13 +278,15 @@ PSK_Modulate (const uint8_t *bits, uint32_t bitCount, float *iq_out,
               uint32_t samplesPerBit, float sampleRate,
               float carrierAmp)
 {
-  (void)bits;
-  (void)bitCount;
-  (void)iq_out;
-  (void)samplesPerBit;
   (void)sampleRate;
-  (void)carrierAmp;
-  /* TODO: Implement PSK modulation with complex output */
+  if (!bits || !iq_out || !samplesPerBit) return;
+  for (uint32_t n = 0; n < bitCount; ++n) {
+    float i = bits[n] ? -carrierAmp : carrierAmp;
+    for (uint32_t s = 0; s < samplesPerBit; ++s) {
+      *iq_out++ = i;
+      *iq_out++ = 0.0f;
+    }
+  }
 }
 
 void
@@ -292,12 +294,13 @@ PSK_Demodulate (const float *iq_in, uint8_t *bits,
                 uint32_t bitCount, uint32_t samplesPerBit,
                 float sampleRate)
 {
-  (void)iq_in;
-  (void)bits;
-  (void)bitCount;
-  (void)samplesPerBit;
   (void)sampleRate;
-  /* TODO: Implement PSK demodulation from complex input */
+  if (!bits || !iq_in || !samplesPerBit) return;
+  for (uint32_t n = 0; n < bitCount; ++n) {
+    float sum = 0;
+    for (uint32_t s = 0; s < samplesPerBit; ++s, iq_in += 2) sum += iq_in[0];
+    bits[n] = sum < 0.0f;
+  }
 }
 
 void

@@ -22,6 +22,7 @@
 #include "stm32h7xx_it.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "ttc_app.h"
 #include "i2s.h"
 /* USER CODE END Includes */
 
@@ -71,6 +72,7 @@ extern TIM_HandleTypeDef htim1;
 void NMI_Handler(void)
 {
   /* USER CODE BEGIN NonMaskableInt_IRQn 0 */
+  ttc_record_fault(5);
 
   /* USER CODE END NonMaskableInt_IRQn 0 */
   /* USER CODE BEGIN NonMaskableInt_IRQn 1 */
@@ -86,6 +88,7 @@ void NMI_Handler(void)
 void HardFault_Handler(void)
 {
   /* USER CODE BEGIN HardFault_IRQn 0 */
+  ttc_record_fault(1);
 
   /* USER CODE END HardFault_IRQn 0 */
   while (1)
@@ -101,6 +104,7 @@ void HardFault_Handler(void)
 void MemManage_Handler(void)
 {
   /* USER CODE BEGIN MemoryManagement_IRQn 0 */
+  ttc_record_fault(2);
 
   /* USER CODE END MemoryManagement_IRQn 0 */
   while (1)
@@ -116,6 +120,7 @@ void MemManage_Handler(void)
 void BusFault_Handler(void)
 {
   /* USER CODE BEGIN BusFault_IRQn 0 */
+  ttc_record_fault(3);
 
   /* USER CODE END BusFault_IRQn 0 */
   while (1)
@@ -131,6 +136,7 @@ void BusFault_Handler(void)
 void UsageFault_Handler(void)
 {
   /* USER CODE BEGIN UsageFault_IRQn 0 */
+  ttc_record_fault(4);
 
   /* USER CODE END UsageFault_IRQn 0 */
   while (1)
@@ -175,6 +181,12 @@ void TIM1_UP_IRQHandler(void)
 }
 
 /* USER CODE BEGIN 1 */
+
+void DMA1_Stream1_IRQHandler(void)
+{
+  extern DMA_HandleTypeDef hdma_spi1_rx;
+  HAL_DMA_IRQHandler(&hdma_spi1_rx);
+}
 
 void DMA1_Stream0_IRQHandler(void)
 {

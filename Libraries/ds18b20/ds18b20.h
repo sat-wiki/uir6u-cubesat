@@ -20,12 +20,12 @@
 //	Remember to configure a timer on CubeMX 1us per tick
 //	example 72 MHz cpu - Prescaler=(72-1), Counter period=65000
 #define DS18B20_MAX_SENSORS 4
-#define DS18B20_GPIO_Port GPIOB
-#define DS18B20_Pin GPIO_PIN_2
+#define DS18B20_GPIO_Port TEMP_GPIO_Port
+#define DS18B20_Pin TEMP_Pin
 
 
 
-// #define _DS18B20_USE_CRC
+#define _DS18B20_USE_CRC
 
 //
 //	Sensor structure

@@ -370,12 +370,6 @@ void OneWire_Init(OneWire_t *onewire, GPIO_TypeDef *GPIOx, uint16_t GPIO_Pin)
     onewire->GPIOx = GPIOx; // Save 1-wire bus pin
     onewire->GPIO_Pin = GPIO_Pin;
 
-    // 1-Wire bit bang initialization
-    OneWire_BusOutputDirection(onewire);
     OneWire_OutputHigh(onewire);
-    osDelay(100);
-    OneWire_OutputLow(onewire);
-    osDelay(100);
-    OneWire_OutputHigh(onewire);
-    osDelay(200);
+    OneWire_BusInputDirection(onewire);
 }

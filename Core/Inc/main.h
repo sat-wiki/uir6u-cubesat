@@ -75,6 +75,8 @@ void Error_Handler(void);
 #define AIC3104_DPWR_GPIO_Port GPIOA
 #define ADF7021_TESTA_Pin GPIO_PIN_0
 #define ADF7021_TESTA_GPIO_Port GPIOB
+#define NAND_CS_Pin GPIO_PIN_4
+#define NAND_CS_GPIO_Port GPIOE
 #define FAULT3V3_Pin GPIO_PIN_7
 #define FAULT3V3_GPIO_Port GPIOE
 #define IO00_Pin GPIO_PIN_9

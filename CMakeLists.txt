@@ -47,26 +47,44 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user sources here
     Libraries/aic3104.c
     Libraries/adf7021.c
-    Libraries/ADF4360.c
+    Libraries/adf4360.c
     Libraries/ltc5599.c
-    Libraries/Communication.c
+    Libraries/communication.c
     Libraries/source.c
-    Libraries/TIME.c
+    Libraries/adi_delay.c
+    Libraries/ttc_link.c
+    Libraries/ttc_vote.c
+    Libraries/ttc_store.c
+    Libraries/ttc_radio.c
+    Libraries/ttc_app.c
     Libraries/modem.c
-    Libraries/DS18B20/DS18B20.c
-    Libraries/DS18B20/onewire.c
+    Libraries/ds18b20/ds18b20.c
+    Libraries/ds18b20/onewire.c
 )
 
 # Add include paths
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user defined include paths
-    Libraries/DS18B20
+    Libraries/ds18b20
     Libraries/
 )
 
+# Bench channel centres in Hz. The integer-N downlink PLL uses a 12.5 kHz grid.
+set(TTC_UPLINK_HZ 145000000 CACHE STRING "VHF uplink centre in Hz")
+set(TTC_DOWNLINK_HZ 436500000 CACHE STRING "UHF downlink centre in Hz")
+if(NOT TTC_UPLINK_HZ MATCHES "^[1-9][0-9]*$" OR NOT TTC_DOWNLINK_HZ MATCHES "^[1-9][0-9]*$")
+    message(FATAL_ERROR "TTC channel centres must be integer frequencies in Hz")
+endif()
+math(EXPR downlink_remainder "${TTC_DOWNLINK_HZ} % 12500")
+if(TTC_UPLINK_HZ LESS 144000000 OR TTC_UPLINK_HZ GREATER 146000000 OR
+   TTC_DOWNLINK_HZ LESS 435000000 OR TTC_DOWNLINK_HZ GREATER 438000000 OR downlink_remainder)
+    message(FATAL_ERROR "Select a 144-146 MHz uplink and a 435-438 MHz downlink on the 12.5 kHz grid")
+endif()
+
 # Add project symbols (macros)
 target_compile_definitions(${CMAKE_PROJECT_NAME} PRIVATE
-    # Add user defined symbols
+    TTC_UPLINK_HZ=${TTC_UPLINK_HZ}U
+    TTC_DOWNLINK_HZ=${TTC_DOWNLINK_HZ}U
 )
 
 # Remove wrong libob.a library dependency when using cpp files

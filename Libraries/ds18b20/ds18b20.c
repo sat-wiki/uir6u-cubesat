@@ -8,7 +8,7 @@
  *      mateusz@msalamon.pl
  *
  */
-#include "DS18B20.h"
+#include "ds18b20.h"
 #include "string.h"
 #include "cmsis_os.h"
 #include "main.h"
@@ -62,7 +62,7 @@ uint8_t DS18B20_Read(uint8_t number, float *destination)
     if (number >= TempSensorCount) // If read sensor is not availible
         return 0;
 
-    uint16_t temperature;
+    int16_t temperature;
     uint8_t resolution;
     float result;
     uint8_t i = 0;
@@ -100,13 +100,13 @@ uint8_t DS18B20_Read(uint8_t number, float *destination)
     switch (resolution) // Chceck the correct value dur to resolution
     {
     case DS18B20_Resolution_9bits:
-        result = temperature * (float)DS18B20_STEP_9BIT;
+        result = temperature * (float)DS18B20_STEP_12BIT;
         break;
     case DS18B20_Resolution_10bits:
-        result = temperature * (float)DS18B20_STEP_10BIT;
+        result = temperature * (float)DS18B20_STEP_12BIT;
         break;
     case DS18B20_Resolution_11bits:
-        result = temperature * (float)DS18B20_STEP_11BIT;
+        result = temperature * (float)DS18B20_STEP_12BIT;
         break;
     case DS18B20_Resolution_12bits:
         result = temperature * (float)DS18B20_STEP_12BIT;
@@ -236,7 +236,7 @@ void DS18B20_ReadAll(void)
 void DS18B20_GetROM(uint8_t number, uint8_t *ROM)
 {
     if (number >= TempSensorCount)
-        number = TempSensorCount;
+        return;
 
     uint8_t i;
 
@@ -262,7 +262,7 @@ uint8_t DS18B20_Quantity(void)
 
 uint8_t DS18B20_GetTemperature(uint8_t number, float *destination)
 {
-    if (!ds18b20[number].ValidDataFlag)
+    if (number >= TempSensorCount || !ds18b20[number].ValidDataFlag)
         return 0;
 
     *destination = ds18b20[number].Temperature;
@@ -274,6 +274,7 @@ void DS18B20_Init(DS18B20_Resolution_t resolution)
     uint8_t next = 0, i = 0, j;
     OneWire_Init(&OneWire, DS18B20_GPIO_Port, DS18B20_Pin); // Init OneWire bus
 
+    TempSensorCount = 0;
     next = OneWire_First(&OneWire); // Search first OneWire device
     while (next)
     {
@@ -286,10 +287,10 @@ void DS18B20_Init(DS18B20_Resolution_t resolution)
 
     for (j = 0; j < i; j++)
     {
-        DS18B20_SetResolution(j, resolution); // Set the initial resolution to sensor
-
-        DS18B20_StartAll(); // Start conversion on all sensors
+        if (DS18B20_GetResolution(j) + 9u != (unsigned)resolution)
+            DS18B20_SetResolution(j, resolution);
     }
+    if (i) DS18B20_StartAll();
 }
 float temperature;
 char message[128];

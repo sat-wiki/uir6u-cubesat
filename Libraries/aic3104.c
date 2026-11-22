@@ -421,7 +421,11 @@ HAL_StatusTypeDef AIC3104_SetInputRoute(AIC3104_Config_t *config,
 
     route_bits = enable ? 0x00U : 0x0FU;
 
-    st = AIC3104_UpdateBits(config, reg, 0x0FU, route_bits);
+    if (input == AIC3104_INPUT_MIC2L || input == AIC3104_INPUT_MIC2R) {
+        unsigned shift = input == AIC3104_INPUT_MIC2L ? 4 : 0;
+        return AIC3104_UpdateBits(config, reg, (uint8_t)(0x0fU << shift), (uint8_t)(route_bits << shift));
+    }
+    st = AIC3104_UpdateBits(config, reg, 0x78U, (uint8_t)(route_bits << 3));
     if (st != HAL_OK) return st;
 
     if (differential) {

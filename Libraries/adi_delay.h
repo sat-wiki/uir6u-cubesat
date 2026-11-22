@@ -1,8 +1,7 @@
 /***************************************************************************//**
- *   @file   Communication.h
- *   @brief  Header file of Communication Driver.
- *           Processor.
- *   @author DBogdan (dragos.bogdan@analog.com)
+ *   @file   adi_delay.h
+ *   @brief  Header file of TIME Driver.
+ *   @author Dan Nechita
 ********************************************************************************
  * Copyright 2012(c) Analog Devices, Inc.
  *
@@ -40,58 +39,27 @@
 ********************************************************************************
  *   SVN Revision: 768
 *******************************************************************************/
-#ifndef _COMMUNICATION_H_
-#define _COMMUNICATION_H_
+#ifndef ADI_DELAY_H
+#define ADI_DELAY_H
 
 /******************************************************************************/
-/* Include Files                                                              */
-/******************************************************************************/
-#include "stm32h7xx_hal.h"
-/******************************************************************************/
-/* Functions Prototypes                                                       */
+/************************ Functions Declarations ******************************/
 /******************************************************************************/
 
-/*! Select SPI NSS*/
-void SPI3_CS_Select(void);
+/*! Initializes the timer used in this driver. */
+unsigned char TIME_Init(void);
 
-/*! Deselect SPI NSS*/
-void SPI3_CS_Deselect(void);
+/*! The timer begins to count in steps of microseconds(us) until the user calls a
+stop measurement function. */
+void TIME_StartMeasure(void);
 
-/*! Initializes the I2C communication peripheral. */
-unsigned char I2C_Init(unsigned long clockFreq);
+/*! Stops the measurement process when the functions is called. */
+unsigned long TIME_StopMeasure(void);
 
-/*! Writes data to a slave device. */
-unsigned char I2C_Write(unsigned char slaveAddress,
-                        unsigned char* dataBuffer,
-                        unsigned char bytesNumber,
-                        unsigned char stopBit);
+/*! Creates a delay of microseconds. */
+void TIME_DelayUs(unsigned short usUnits);
 
-/*! Reads data from a slave device. */
-unsigned char I2C_Read(unsigned char slaveAddress,
-                       unsigned char* dataBuffer,
-                       unsigned char bytesNumber,
-                       unsigned char stopBit);
+/*! Creates a delay of milliseconds. */
+void TIME_DelayMs(unsigned short msUnits);
 
-/*! Initializes the SPI communication peripheral. */
-unsigned char SPI_Init(unsigned char lsbFirst,
-                       unsigned long clockFreq,
-                       unsigned char clockPol,
-                       unsigned char clockEdg);
-
-/*! Initializes the SPI communication peripheral. */
-unsigned char SPI_Init(unsigned char lsbFirst,
-                       unsigned long clockFreq,
-                       unsigned char clockPol,
-                       unsigned char clockEdg);
-
-/*! Reads data from SPI. */
-unsigned char SPI_Read(unsigned char slaveDeviceId,
-                       unsigned char* data,
-                       unsigned char bytesNumber);
-
-/*! Writes data to SPI. */
-unsigned char SPI_Write(unsigned char slaveDeviceId,
-                        unsigned char* data,
-                        unsigned char bytesNumber);
-
-#endif // _COMMUNICATION_H
+#endif // ADI_DELAY_H

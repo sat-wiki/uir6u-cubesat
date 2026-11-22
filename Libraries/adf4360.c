@@ -1,4 +1,4 @@
-#include "ADF4360.h"
+#include "adf4360.h"
 
 #include "main.h"
 #include "spi.h"
@@ -256,7 +256,10 @@ HAL_StatusTypeDef ADF4360_SetFrequencyConfig(ADF4360_Config_t *config,
         }
     }
 
-    r_counter = adf4360_tune_r_counter(config->settings.ref_in_hz);
+    r_counter = config->settings.reference_divider;
+    if (!r_counter) r_counter = adf4360_tune_r_counter(config->settings.ref_in_hz);
+    if (r_counter > 0x3fff || config->settings.ref_in_hz < r_counter ||
+        config->settings.ref_in_hz / r_counter > ADF4360_MAX_PFD_HZ) return HAL_ERROR;
     pfd_hz = config->settings.ref_in_hz / (uint32_t)r_counter;
     ratio = adf4360_round_div_u64(vco_hz, pfd_hz);
 

@@ -107,14 +107,14 @@ static HAL_StatusTypeDef adf7021_program_common_sys_regs(ADF7021_Config_t *confi
     r1 |= ((uint32_t)config->xtal_bias & 0x3U) << 13;
     r1 |= ((uint32_t)(config->xosc_enable ? 1U : 0U) & 0x1U) << 12;
     r1 |= ((uint32_t)(config->xtal_doubler ? 1U : 0U) & 0x1U) << 11;
-    r1 |= (7U << 7); /* CLKOUT divide */
+    /* CLKOUT divider zero disables the shared clock output. */
     r1 |= ((uint32_t)adf7021_clamp_u32(config->r_counter, 1U, 7U) & 0x7U) << 4;
 
     if (ADF7021_WriteReg(config, ADF7021_REG_1, r1) != HAL_OK) {
         return HAL_ERROR;
     }
 
-    config->cached.reg15 = (7U << 17); /* CLK_MUX = TxRxCLK for SPI visibility */
+    config->cached.reg15 = 0; /* normal mode, no test clock output */
     return ADF7021_WriteReg(config, ADF7021_REG_15, config->cached.reg15);
 }
 

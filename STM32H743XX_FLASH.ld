@@ -229,6 +229,11 @@ SECTIONS
   PROVIDE( __bss_start = __tbss_start );
   PROVIDE( __bss_size = __bss_end - __bss_start );
 
+  .retained_fault (NOLOAD) : ALIGN(8)
+  {
+    KEEP(*(.retained_fault))
+  } >DTCMRAM
+
   /* DMA1/DMA2 cannot access DTCM, so DMA buffers live in SRAM1/2/3. */
   .dma_buffer (NOLOAD) : ALIGN(32)
   {
