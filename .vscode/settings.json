@@ -9,8 +9,8 @@
   "stm32cube-ide-clangd.path": "cube",
   "stm32cube-ide-clangd.arguments": [
     "starm-clangd",
-    "--query-driver=${env:CUBE_BUNDLE_PATH}/st-arm-clang/19.1.6+st.10/bin/starm-clang.exe",
-    "--query-driver=${env:CUBE_BUNDLE_PATH}/st-arm-clang/19.1.6+st.10/bin/starm-clang++.exe"
+    "--query-driver=${env:CUBE_BUNDLE_PATH}/st-arm-clang/21.1.1+st.7/bin/starm-clang.exe",
+    "--query-driver=${env:CUBE_BUNDLE_PATH}/st-arm-clang/21.1.1+st.7/bin/starm-clang++.exe"
   ],
   "C_Cpp.intelliSenseEngine": "disabled"
 }

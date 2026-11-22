@@ -2,27 +2,27 @@
   "bundles": [
     {
       "name": "cmake",
-      "version": "4.0.1+st.3"
+      "version": "4.4.0+st.1"
     },
     {
       "name": "ninja",
-      "version": "1.13.1+st.1"
+      "version": "1.13.2+st.1"
     },
     {
       "name": "st-arm-clang-hybrid",
-      "version": "19.1.6+st.3"
+      "version": "21.1.1+st.2"
     },
     {
       "name": "st-arm-clangd",
-      "version": "19.1.2+st.3"
+      "version": "21.1.0+st.2"
     },
     {
       "name": "programmer",
-      "version": "2.21.0"
+      "version": "2.23.0"
     },
     {
       "name": "stlink-gdbserver",
-      "version": "7.12.0+st.2"
+      "version": "7.14.0+st.2"
     }
   ]
 }
