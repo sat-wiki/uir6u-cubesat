@@ -1,0 +1,22 @@
+using "platforms/cpus/stm32h743.repl"
+
+// The firmware runs the core and APB timer kernels from the 64 MHz HSI.
+nvic:
+    systickFrequency: 64000000
+timer1:
+    frequency: 64000000
+timer2:
+    frequency: 64000000
+timer3:
+    frequency: 64000000
+
+powerGood: Miscellaneous.Button @ gpioPortE
+    -> gpioPortE@7
+txLocked: Miscellaneous.Button @ gpioPortC
+    -> gpioPortC@3
+paShutdown: Miscellaneous.LED @ gpioPortC
+gpioPortC:
+    7 -> paShutdown@0
+watchdogInput: Miscellaneous.LED @ gpioPortD
+gpioPortD:
+    2 -> watchdogInput@0
